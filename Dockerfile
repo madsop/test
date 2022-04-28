@@ -41,7 +41,7 @@ WORKDIR /home/app
 RUN ls /home/app
 RUN $MAVEN_HOME/bin/mvn clean package -Pnative -B -e
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5 as runner
+FROM quay.io/quarkus/quarkus-micro-image:1.0 as runner
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
