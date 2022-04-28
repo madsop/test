@@ -9,7 +9,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'randomstrings-quarkusnative'
+      - 'test'
       - '--image'
       - 'gcr.io/$PROJECT_ID/test:latest'
       - '--region'
