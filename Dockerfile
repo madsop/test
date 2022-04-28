@@ -16,11 +16,8 @@
 ###
 
 
-
 # Step 1: build the native image
-FROM ghcr.io/graalvm/graalvm-ce:java11-21.0.0 as graalvm
-COPY . /home/app
-WORKDIR /home/app
+FROM ghcr.io/graalvm/graalvm-ce:ol8-java17-22 as graalvm
 
 # Download and install Maven
 ARG MAVEN_VERSION=3.6.3
@@ -39,6 +36,9 @@ ENV MAVEN_HOME /usr/share/maven
 ENV GRAALVM_HOME $JAVA_HOME
 RUN ${GRAALVM_HOME}/bin/gu install native-image
 
+COPY . /home/app
+WORKDIR /home/app
+RUN ls /home/app
 RUN $MAVEN_HOME/bin/mvn clean package -Pnative -B -e
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5 as runner
@@ -46,7 +46,7 @@ WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
     && chown 1001:root /work
-COPY --from=graalvm --chown=1001:root target/*-runner /work/application
+COPY --from=graalvm --chown=1001:root /home/app/target/*-runner /work/application
 
 EXPOSE 8080
 USER 1001
