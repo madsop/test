@@ -1,0 +1,21 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/test, '.']
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/$PROJECT_ID/test' ]
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'randomstrings-quarkusnative'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/test:latest'
+      - '--region'
+      - 'europe-north1'
+      - '--platform'
+      - 'managed'
+images: ['gcr.io/$PROJECT_ID/test']
+options:
+  machineType: N1_HIGHCPU_8
